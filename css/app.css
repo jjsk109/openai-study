@@ -1,0 +1,109 @@
+body{
+    background-color: #000000;
+    color: #e0e0e0;
+  }
+  .is-family-sans-serif{
+    margin: 0 auto;
+    width: 600px;
+    text-align: center;
+  }
+  .is-family-sans-serif{
+    margin-bottom: 100px;
+  }
+  .is-family-sans-serif textarea,
+  .is-family-sans-serif input{
+    width: 60%;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    resize: none;
+  }
+  .is-family-sans-serif button{
+    padding: 10px 40px;
+    background-color: #98979a;
+    border: 2px solid #eee;
+
+    border-radius: 5px;
+  }
+  .qna_box{
+    width: 100%;
+    margin-top: 10px;
+    gap: 5px;
+  }
+  .qna_box div{
+    text-align: left;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  .qna_box div:first-of-type{
+    background-color: rgba(254, 54, 54,0.1);
+    border: 2px solid rgb(254, 54, 54);
+  }
+  .qna_box div:last-of-type{
+    background-color: rgba(89, 71, 132, 0.735);
+    border: 2px solid rgba(186, 126, 255, 0.586);
+  }
+  .wait{
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.552);
+    z-index: 2;
+  }
+  .wait div{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+       border: 3px solid rgba(254, 54, 54,0.6);
+      border-top: none;
+      border-bottom: none;
+      animation: 1s wait infinite;
+  }  
+  .is-family-sans-serif pre{
+    word-break:  keep-all;
+  }
+  @keyframes wait {
+  from {
+    /* transform:  rotateX(365deg) rotateY(0deg); */
+    border: 3px solid rgba(254, 54, 54,0.6);
+    border-left: none;
+    border-right: none;
+  }
+
+  to {
+    /* transform: rotateX(0deg) rotateY(365deg) ; */
+    border: 3px solid rgba(254, 54, 54,0.6);
+    border-top: none;
+    border-bottom: none;
+  }
+}
+.wait.none{
+  display: none;
+}
+.text_left{
+  padding: 10px 20px;
+  text-align: left;
+}
+.text_right{
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.552);
+  text-align: left;
+}
+.input_box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input_section{
+  position: fixed;
+  bottom: 0px;
+  width: 600px;
+  padding: 20px 0;
+  background-color: #000000;
+}

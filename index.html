@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title>OpenAI Study!</title>
+</head>
+<link rel="stylesheet" href="./css/app.css">
+<body>
+  <div class="is-family-sans-serif  has-text-white has-text-centered">
+    <h1 class="is-size-1 has-text-centered is-uppercase has-text-weight-bold">OpenAI Study!</h1>
+    <div>    
+      <div class="qna_box">
+        <div>챗 쥐피티 따라하기</div>
+      </div>
+      <div id="result_box" >    
+      </div>
+    </div>
+    <div class="input_section">
+      <div class="input_box">
+        <textarea name=""id="sendText"  cols="30" rows="1"></textarea>
+        <button id="send" >Send OpenAI</button>
+      </div>
+    </div>
+    <div id="wait" class="wait none">
+      <div>
+      </div>
+      <p>답변 기다리는 중 ...</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.3/dist/axios.min.js"></script>
+  <script type="module">
+    import { Configuration, OpenAIApi } from 'https://cdn.skypack.dev/openai';
+
+    document.querySelector('#send').addEventListener('click', async () =>{
+      const wait = document.querySelector('#wait');
+      wait.className = "wait";
+
+
+      const sendText = document.querySelector('#sendText');
+      
+      const resultText = document.querySelector('#result_box');
+      
+      const q_string = resultText.innerText + sendText.value;
+      const configuration = new Configuration({
+        apiKey: "api key",
+      });
+      const openai = new OpenAIApi(configuration);
+
+      openai.createCompletion({
+        model: "text-davinci-003",
+        // prompt: `${sendText}를(을) 주제로 짧은 시를 만들어 주세요`,
+        //prompt: `리뷰 "${sendText}"에 대한 판매자 답변`,
+        //prompt: `제품/브랜드 이름 : "몬스터", 제품에 대한 짧은 설명: "카페인이 많이 들어있는 에너지 드링크", 포함 단어 : "에너지, 음료"를(을) 충족하는 광고 제목을 친구에게 말하듯 느낌으로 작성해 줘`,
+        //prompt: `제품/브랜드 이름 : "토시살 스테이크", 제품에 대한 짧은 설명: "[냉장] 토시살 스테이크 180g (프리미엄 신선냉장)", 포함 단어 : ""를(을) 충족하는 광고 내용을 다정한 느낌으로 작성해 줘`,
+        prompt: q_string,
+        temperature: 0.7,
+        max_tokens: 600,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      }).then((result)=>{
+        let text = sendText.value ?`<div class="text_left"><pre>나 : ${sendText.value}</pre></div>` : "";
+        text += result.data.choices[0].text ? `<div class="text_right"><pre> ${sendText.value ? "OpenAI 답변 : " : ""}${result.data.choices[0].text}</pre></div>` 
+          :`<div class="text_right">OpenAI가 듣고 있습니다.</div>` ;
+
+        let beforeData =  resultText.innerHTML + text ;
+        resultText.innerHTML = beforeData;
+        wait.className = "wait none";
+        
+        sendText.value = "";
+
+      }).catch(err=>{
+        alert("에러 발생!")
+        console.log(err);
+        sendText.value = "";
+        wait.className = "wait none";
+      })
+    })
+  
+  </script>
+</body>
+
+</html>
