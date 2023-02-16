@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Study!</title>
+    <link rel="stylesheet" href="./css/app.css">
+    <link rel="stylesheet" href="./css/googleAd.css">
+
+</head>
+
+<body>
+    <section>리스트</section>
+    <section>
+        <h2>구글 검색 광고 문구</h2>
+        <div>
+            <label for="name">제품 / 브랜드 이름</label>
+            <div>
+                <input type="text" id="name">
+            </div>
+        </div>
+        <div>
+            <label for="info">제품 간단 정보</label>
+            <div>
+                <input type="text" id="info">
+            </div>
+        </div>
+        <input type="radio" name="select" id="title"><label for="title">제목</label>
+        <input type="radio" name="select" id="explanation"><label for="explanation">설명</label>
+        <div>
+            <button  id="send">자동 생성</button>
+        </div>
+    </section>
+    <section id="result_box">
+        <div>
+
+        </div>
+    </section>
+    <div id="wait" class="wait none">
+        <div>
+        </div>
+        <p>답변 기다리는 중 ...</p>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.3/dist/axios.min.js"></script>
+    <script type="module">
+        import { Configuration, OpenAIApi } from 'https://cdn.skypack.dev/openai';
+
+        document.querySelector('#send').addEventListener('click', async () => {
+            const wait = document.querySelector('#wait');
+            const result_box = document.querySelector('#result_box');
+            wait.className = "wait";
+
+
+            const name = document.querySelector('#name').value;
+            const info = document.querySelector('#info').value;
+            const title = document.querySelector('#title').checked;
+         
+            let q_string = title ? g_title : g_info;
+
+            q_string += `제품 / 브랜드 이름 : ${name}
+제품 간단 정보 : ${info}
+${title? "제목":"설명"} :`;
+            
+            const configuration = new Configuration({
+                apiKey: "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",
+            });
+            const openai = new OpenAIApi(configuration);
+            console.log(q_string);
+            openai.createCompletion({
+                model: "text-davinci-003",
+                // prompt: `${sendText}를(을) 주제로 짧은 시를 만들어 주세요`,
+                //prompt: `리뷰 "${sendText}"에 대한 판매자 답변`,
+                //prompt: `제품/브랜드 이름 : "몬스터", 제품에 대한 짧은 설명: "카페인이 많이 들어있는 에너지 드링크", 포함 단어 : "에너지, 음료"를(을) 충족하는 광고 제목을 친구에게 말하듯 느낌으로 작성해 줘`,
+                //prompt: `제품/브랜드 이름 : "토시살 스테이크", 제품에 대한 짧은 설명: "[냉장] 토시살 스테이크 180g (프리미엄 신선냉장)", 포함 단어 : ""를(을) 충족하는 광고 내용을 다정한 느낌으로 작성해 줘`,
+                prompt: q_string,
+                temperature: 0.7,
+                max_tokens: 600,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0,
+            }).then((result) => {
+                let text = `<div class="text_right">${result.data.choices[0].text}</div>`  ;
+
+                result_box.innerHTML = text + result_box.innerHTML;
+                wait.className = "wait none";
+
+
+            }).catch(err => {
+                alert("에러 발생!")
+                console.log(err);
+                wait.className = "wait none";
+            })
+        })
+
+
+
+        const g_title = `구글 검색 광고는 수많은 검색 결과 속에서 눈에 띄는 타이틀을 생성합니다.
+
+예를 들어
+
+제품 / 브랜드 이름 : 코드진슨
+제품 간단 정보 : 코딩을 몰라도 사용할 수 있는 웹 사이트
+제목 : 코딩 없이도 홈페이지 제작 가능! 코드로 세상을 바꾸는 진슨코드, 코드진슨
+
+제품 / 브랜드 이름 : 쫀징어
+제품 간단 정보 : 쫀슐랭 쫀징어 오징어 쫀드기 쥐포 노가리 육포 진미채 맥주안주 오리지널 고소한김 핫불닭 직화구이
+제목 : 쫀득하고 맛있는 간식거리 모음전!
+
+제품 / 브랜드 이름 : 삼다수
+제품 간단 정보 : 제주삼다수 그린 무라벨
+제목 : 라벨없는 생수, 친환경 프리미엄 먹는샘물 - 제주삼다수 그린 무라벨
+
+제품 / 브랜드 이름 : 코코프
+제품 간단 정보 : 캠핑 의자테이블 세트 경량 접이식 의자 테이블
+답변 : 가볍고 편리한 휴대용의자,캠핑용품은 코코프에서!
+
+제품 / 브랜드 이름 : 무주리조트 스키장
+제품 간단 정보 : 무주리조트 스키장 리프트권
+제목 : 대한민국 대표스키장, 무주리조트에서 즐기는 겨울여행!
+
+제품 / 브랜드 이름 : 탐스제로 레몬
+제품 간단 정보 : 롯데음료 레몬 맛 탄산 음료
+제목 : 제로 칼로리, 당류 0g! 건강하고 상큼한 레모네이드 스파클링 워터
+
+제품 / 브랜드 이름 : 제로펩시 라임
+제품 간단 정보 : 제로 펩시콜라에 라임 향을 첨가
+제목 :더 상큼해진 제로칼로리 콜라 - 제로펩시 라임
+
+제품 / 브랜드 이름 : 하림 닭가슴살 블랙페퍼
+제품 간단 정보 : 하림 닭가슴살 블랙페퍼
+제목 : 100% 국내산 닭고기로 만든 고단백 저칼로리 식품 - 하림 닭가슴살 블랙페퍼
+
+제품 / 브랜드 이름 : 헤라 블랙 쿠션
+제품 간단 정보 : 헤라 블랙 쿠션 리필
+제목 : 인생쿠션, 그 이상! HERA BLACK CUSHION
+
+제품 / 브랜드 이름 : 마이올린
+제품 간단 정보 : 아이들 학습지
+제목 : 스마트학습지, 마이올린 - 우리아이 공부습관 잡기 프로젝트
+
+제품 / 브랜드 이름 : 마이올린
+제품 간단 정보 : 아이들 학습지
+제목 : 우리아이 첫 공부, 눈높이 맞춤학습법 - 마이올린`;
+
+const g_info =`구글 검색 광고는 수많은 검색 결과 속에서 눈에 띄는 제품 설명을 생성합니다.
+
+예를 들어
+
+제품 / 브랜드 이름 : 코드진슨
+제품 간단 정보 : 코딩을 몰라도 사용할 수 있는 웹 사이트
+설명 : 컴퓨터 전공자가 아니어도 OK. 누구나 쉽게 만들 수 있는 홈페이지 제작 툴. 세상에서 가장 쉬운 전자상거래 솔루션 제공. 개발 지식이 없어도 자신만의 쇼핑몰 운영자 되기.
+
+제품 / 브랜드 이름 : 쫀징어
+제품 간단 정보 : 쫀슐랭 쫀징어 오징어 쫀드기 쥐포 노가리 육포 진미채 맥주안주 오리지널 고소한김 핫불닭 직화구이
+설명 : 쫄깃한데 고소하고 매콤달콤하다. 혼술 안주 최강자는? 쫀득쫀득 맛있는 쫀득징어. 출출할 때 간식으로도 좋아요.
+
+제품 / 브랜드 이름 : 삼다수
+제품 간단 정보 : 제주삼다수 그린 무라벨
+설명 : 라벨을 없애 환경까지 생각했습니다. 분리수거 필요없는 간편한 수분충전. 청정제주에서 온 깨끗한 물. 500ml 20개입 1박스 12,600원.
+
+제품 / 브랜드 이름 : 코코프
+제품 간단 정보 : 캠핑 의자테이블 세트 경량 접이식 의자 테이블
+설명 : 심플하고 미니멀한 디자인이 매력적인 미니미 폴딩체어와 함께라면 언제 어디서나 감성 가득한 나만의 피크닉을 즐길 수 있어요.
+
+제품 / 브랜드 이름 : 무주리조트 스키장
+제품 간단 정보 : 무주리조트 스키장 리프트권
+설명 : 전북 최대 규모 7면 슬로프 보유. 최고 설질을 자랑하는 덕유산 최상급 리조트. 사계절 내내 즐기는 복합레저 공간. 안전하고 편리한 시설관리.
+
+제품 / 브랜드 이름 : 탐스제로 레몬
+제품 간단 정보 : 롯데음료 레몬 맛 탄산 음료
+설명 : 설탕을 빼고 건강만 담았다. L-아르기닌이 함유된 저칼로리 에이드 드링크. 제로 칼로리 상큼 청량 탄산수. 0kcal 무설탕 다이어트 사이다. 당 걱정 없이 상쾌하고 톡 쏘는 기분 좋은 경험. 이제부터 부담없는 하루 한 잔 나만의 스파클링 타임.
+
+제품 / 브랜드 이름 : 제로펩시 라임
+제품 간단 정보 : 제로 펩시콜라에 라임 향을 첨가
+설명 : 칼로리 0kcal 당류 0g 트랜스지방 0g 걱정 없이 즐기는 탄산음료. 언제 어디서나 부담 없이 마시는 제로 콜라. 다이어트 중에도 마음껏 즐기자. 갈증해소엔 역시 제로 펩시라임.
+
+제품 / 브랜드 이름 : 하림 닭가슴살 블랙페퍼
+제품 간단 정보 : 하림 닭가슴살 블랙페퍼
+설명 : 100% 국내산 냉장육 촉촉한 닭가슴살. 질리지 않는 맛이 일품입니다. 간편하게 먹는 닭고기 요리. 고급스러운 풍미와 식감을 경험하세요.
+
+제품 / 브랜드 이름 : 헤라 블랙 쿠션
+제품 간단 정보 : 헤라 블랙 쿠션 리필
+설명 : 빛나는 광채와 압도적인 커버력을 가진 무결점 메이크업 필수템. 다크닝 없이 하루종일 화사한 지속력까지 갖춘 국민쿠션 끝판왕. 가성비 최고 인정? 어 인정.
+
+제품 / 브랜드 이름 : 마이올린
+제품 간단 정보 : 아이들 학습지
+설명 : 누리과정 기반 8가지 통합 학습 + 마이크로 러닝으로 흥미와 집중력 UP! NE능률 42년 교육 노하우를 담은 스마트러닝!`;
+    </script>
+</body>
+
+</html>
+

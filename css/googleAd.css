@@ -1,0 +1,23 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    
+}
+html{
+    height: 100%;
+}
+body {
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    height: 100%;
+}
+body>section {
+    min-width: 45%;
+    height: 100%;
+    border: 1px solid #fff;
+}
+body>section:first-of-type {
+    min-width: 10%;
+}
