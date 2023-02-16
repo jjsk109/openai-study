@@ -12,7 +12,20 @@
 </head>
 
 <body>
-    <section>리스트</section>
+    <section>
+        <div>
+            <a href="/index.html">기본</a>
+        </div>
+        <div>
+            <a href="/googleAd.html">구글 광고검색</a>
+        </div>
+        <div>
+            <a href="/AcrosticPoem.html">삼행시</a>
+        </div>
+        <div>
+            <a href="/Hashtag.html">해시태그</a>
+        </div>
+    </section>
     <section>
         <h2>구글 검색 광고 문구</h2>
         <div>
@@ -59,7 +72,8 @@
          
             let q_string = title ? g_title : g_info;
 
-            q_string += `제품 / 브랜드 이름 : ${name}
+            q_string += `
+제품 / 브랜드 이름 : ${name}
 제품 간단 정보 : ${info}
 ${title? "제목":"설명"} :`;
             
@@ -67,7 +81,7 @@ ${title? "제목":"설명"} :`;
                 apiKey: "",
             });
             const openai = new OpenAIApi(configuration);
-            console.log(q_string);
+
             openai.createCompletion({
                 model: "text-davinci-003",
                 // prompt: `${sendText}를(을) 주제로 짧은 시를 만들어 주세요`,
